@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StudentExercises
 {
@@ -76,6 +77,14 @@ namespace StudentExercises
                 Cohort = 34
 
             };
+            Student Dan = new Student()
+            {
+                FirstName = "Dan",
+                LastName = "Storm",
+                SlackHandle = "@TheStorm",
+                Cohort = 34
+
+            };
 
             Day32.AddStudent(Deep);
             Day32.AddStudent(Ellie);
@@ -123,19 +132,30 @@ namespace StudentExercises
             Adam.AssignStudents(Kishan, Exercise1);
             Adam.AssignStudents(Janki, Exercise3);
 
-            List<Student> students = new List<Student>();
+            List<Cohort> cohorts = new List<Cohort>();
+            cohorts.Add(Day32);
+            cohorts.Add(Day33);
+            cohorts.Add(Day34);
 
+            List<Instructor> instructors = new List<Instructor>();
+            instructors.Add(Adam);
+            instructors.Add(Kristen);
+            instructors.Add(Jisie);
+
+            List<Student> students = new List<Student>();
             students.Add(Deep);
             students.Add(Ellie);
             students.Add(Janki);
             students.Add(Kishan);
+            students.Add(Dan);
 
             List<Exercise> exercises = new List<Exercise>();
-
             exercises.Add(Exercise1);
             exercises.Add(Exercise2);
             exercises.Add(Exercise3);
             exercises.Add(Exercise4);
+
+
 
             foreach (Student student in students)
             {
@@ -145,6 +165,61 @@ namespace StudentExercises
                     Console.WriteLine($"Exercise: {exercise.Name}");
                 }
             }
+            Console.WriteLine("------------------------------");
+
+            var jsExercises = (from exercise in exercises
+                               where exercise.Language == "JavaScript"
+                               select exercise);
+
+            jsExercises.ToList().ForEach(ex => Console.WriteLine($"list of JS exercises: {ex.Name}"));
+            Console.WriteLine("------------------------------");
+
+            var studentsInCohort = (from student in students
+                                    where student.Cohort == 34
+                                    select student);
+
+            studentsInCohort.ToList().ForEach(student => Console.WriteLine($"Cohort 34 members: {student.FirstName}{student.LastName}"));
+            Console.WriteLine("------------------------------");
+
+            var instructorsInCohort = (from instructor in instructors
+                                       where instructor.Cohort == 33
+                                       select instructor);
+
+            instructorsInCohort.ToList().ForEach(instructor => Console.WriteLine($"Cohort 33 Instructor: {instructor.FirstName} {instructor.LastName}"));
+            Console.WriteLine("------------------------------");
+
+            var studentsByLast = students.OrderBy(student => student.LastName).ToList();
+
+            Console.WriteLine("Students by last name:");
+            foreach (Student student in students)
+            {
+                Console.WriteLine($"{student.LastName} {student.FirstName}");
+            }
+            Console.WriteLine("------------------------------");
+
+            var notWorkingStudent = (from student in students
+                                     where student.Exercises.Count == 0
+                                     select student);
+
+            notWorkingStudent.ToList().ForEach(student => Console.WriteLine($"Students not working on any exercises: {student.FirstName} {student.LastName}"));
+            Console.WriteLine("------------------------------");
+
+            var mostExercises = students.OrderByDescending(student => student.Exercises.Count()).Take(1);
+
+            Console.WriteLine("Student with the most exercises assigned: ");
+            foreach (Student student in mostExercises)
+            {
+                Console.WriteLine($"{student.FirstName} {student.LastName}");
+            }
+            Console.WriteLine("------------------------------");
+
+            foreach (var cohort in cohorts)
+            {
+                Console.WriteLine($"{cohort.CohortName} has {cohort.Students.Count()} students");
+            }
+            Console.WriteLine("------------------------------");
+
+
         }
     }
 }
